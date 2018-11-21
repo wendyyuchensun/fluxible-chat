@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx parcel watch src/client.js",
+    "build": "npx parcel src/client.js",
     "serve": "node src/server"
   },
   "repository": {

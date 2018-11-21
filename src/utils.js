@@ -13,13 +13,28 @@ const htmlTemplate = (reactDom, data) => (`
                 window.app = {};
                 window.app.data = ${JSON.stringify(data)};
             </script>
-            <script src="./client.js"></script>
+            <script src="http://localhost:1234/client.js"></script>
         </body>
     </html>
 `);
 
-const fetchData = () => ({ number: Math.floor(Math.random() * 100) })
+const fetchData = route => {
+    const base = route === 'ten' ? 10 : 100;
+    return { number: Math.floor(Math.random() * base) };
+}
 
-const connectToData = (Cmpt, data) => React.createElement(Cmpt, data, null);
+const connectToData = (Cmpt, data) => {
+    return React.createElement(Cmpt, data, null);
+};
 
-module.exports = { htmlTemplate, fetchData, connectToData };
+const matchPath = URL => {
+    if (URL === '/10') return 'ten';
+    return 'home';
+};
+
+module.exports = {
+    htmlTemplate,
+    fetchData,
+    connectToData,
+    matchPath
+};
