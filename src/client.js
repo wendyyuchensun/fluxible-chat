@@ -1,4 +1,8 @@
+const React = require('react');
 const ReactDOM = require('react-dom');
 const App = require('./App');
+const { connectToData } = require('./utils');
 
-ReactDOM.hydrate(App, document.querySelector('.root'));
+const rootNode = document.querySelector('.root');
+
+ReactDOM.hydrate(connectToData(App, window.app.data), rootNode);

@@ -3,12 +3,8 @@ const React = require('react');
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { number: 0};
+        this.state = { number: this.props.number };
         this.onClick = this.onClick.bind(this);
-    }
-
-    componentDidMount() {
-        this.setState({ number: 1 });
     }
 
     onClick() {
@@ -21,4 +17,4 @@ class App extends React.Component {
     }
 }
 
-module.exports = React.createElement(App, null, null);
+module.exports = App;
