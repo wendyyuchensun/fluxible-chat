@@ -1,6 +1,6 @@
 const React = require('react');
 
-const htmlTemplate = (reactDom, data) => (`
+const htmlTemplate = (reactDom, data, config) => (`
     <!DOCTYPE html>
     <html>
         <head>
@@ -11,7 +11,8 @@ const htmlTemplate = (reactDom, data) => (`
             <div class="root">${reactDom}</div>
             <script>
                 window.app = {};
-                window.app.data = ${JSON.stringify(data)};
+                window.app.state = ${JSON.stringify(data)};
+                window.app.config = ${JSON.stringify(config)};
             </script>
             <script src="http://localhost:1234/client.js"></script>
         </body>
@@ -32,9 +33,12 @@ const matchPath = URL => {
     return 'home';
 };
 
+const isAuthenticated = state => !!state.authToken;
+
 module.exports = {
     htmlTemplate,
     fetchData,
     connectToData,
-    matchPath
+    matchPath,
+    isAuthenticated
 };

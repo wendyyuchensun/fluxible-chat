@@ -7,20 +7,44 @@ const {
     htmlTemplate,
     fetchData,
     matchPath,
-    connectToData
+    connectToData,
+    isAuthenticated
 } = require('./utils');
+const configs = require('./config');
+
+api.useConfig(config);
 
 const server = express();
 
 server.use((req, res) => {
-    const route = matchPath(req.url);
-    const data = fetchData(route);
+    const state = {};
+    const authToken = getCookie('authToken');
 
-    const Cmpt = connectToData(App, Object.assign(data, { route: route }));
-    const reactDOM = ReactDOMServer.renderToString(Cmpt);
+    checkSession(authToken, isValidToken => {
+        if (isValidToken) {
+            state.authToke = authToken;
+        } else {
+            clearCookie('authToken');
+            state.authToken = null;
+        }
 
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(htmlTemplate(reactDOM, data));
+        const route = matchPath(req.url);
+        if (authorizationNeededForRoute(route) && !isAuthenticated(state)) {
+            redirectToSignInPage();
+            return;
+        }
+
+        if (!config.disableIsomorphic) {
+            state.route = route;
+            state.data = fetchData(route);
+        }
+
+        const Cmpt = connectToData(App, state);
+        const reactDOM = ReactDOMServer.renderToString(Cmpt);
+
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(htmlTemplate(reactDOM, state, config));
+    });
 });
 
 server.listen(3000, () => console.log('Server listening on 3000'));
